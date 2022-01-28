@@ -1,8 +1,8 @@
 package com.sonne.shoppinglist.domian
 
-class GetItemShopListUseCase {
+class GetItemShopListUseCase(private val shopListRepository: ShopListRepository) {
 
     fun getItemShopList(shopItemId: Int): ShopItem {
-        TODO()
+        return shopListRepository.getItemShopList(shopItemId)
     }
 }
