@@ -37,11 +37,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
             val view = LayoutInflater.from(this).inflate(linearlayout, llShopList, false)
-            val txtName = findViewById<TextView>(R.id.tv_name)
-            val txtCount = findViewById<TextView>(R.id.tv_count)
+            val tvName = view.findViewById<TextView>(R.id.tv_name)
+            val tvCount = view.findViewById<TextView>(R.id.tv_count)
 
-//            txtName.text = item.name
-//            txtCount.text = item.count.toString()
+            tvName.text = item.name
+            tvCount.text = item.count.toString()
 
             view.setOnLongClickListener {
                 viewModel.changeEnableState(item)
