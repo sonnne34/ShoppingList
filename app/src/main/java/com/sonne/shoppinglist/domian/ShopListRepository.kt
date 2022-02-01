@@ -1,5 +1,7 @@
 package com.sonne.shoppinglist.domian
 
+import androidx.lifecycle.LiveData
+
 interface ShopListRepository {
 
     fun addItemShopList(shopItem: ShopItem)
@@ -10,5 +12,5 @@ interface ShopListRepository {
 
     fun getItemShopList(shopItemId: Int): ShopItem
 
-    fun getShopList(): List<ShopItem>
+    fun getShopList(): LiveData<List<ShopItem>>
 }
