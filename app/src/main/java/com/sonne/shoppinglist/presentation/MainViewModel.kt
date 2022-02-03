@@ -2,10 +2,7 @@ package com.sonne.shoppinglist.presentation
 
 import androidx.lifecycle.ViewModel
 import com.sonne.shoppinglist.data.ShopListRepositoryImpl
-import com.sonne.shoppinglist.domian.DelItemShopListUseCase
-import com.sonne.shoppinglist.domian.EditItemShopListUseCase
-import com.sonne.shoppinglist.domian.GetShopListUseCase
-import com.sonne.shoppinglist.domian.ShopItem
+import com.sonne.shoppinglist.domian.*
 
 class MainViewModel : ViewModel() {
 

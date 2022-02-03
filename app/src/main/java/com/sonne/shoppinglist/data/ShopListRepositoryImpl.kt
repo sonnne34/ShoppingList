@@ -43,7 +43,7 @@ object ShopListRepositoryImpl : ShopListRepository {
     //  в случае, если объект не найден, приложение упадёт с соответсвующим собщением.
     //  если ситуация, когда объект не найден станет для меня нормальной, можно будет убрать
     //  ?: throw RuntimeException("Element with id $shopItemId not found")
-    //  и просто обозначить значение nonull
+    //  и просто обозначить значение nonnull
     override fun getItemShopList(shopItemId: Int): ShopItem {
         return shopList.find {
             it.id == shopItemId
