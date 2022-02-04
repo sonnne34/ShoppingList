@@ -8,7 +8,7 @@ data class ShopItem(
     //  пока нет реализации БД, использую данный id
     var id: Int = UNDEFINED_ID
 ) {
-    companion object{
+    companion object {
         const val UNDEFINED_ID = -1
     }
 }

@@ -1,6 +1,5 @@
 package com.sonne.shoppinglist.presentation
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sonne.shoppinglist.data.ShopListRepositoryImpl
 import com.sonne.shoppinglist.domian.DelItemShopListUseCase
@@ -18,11 +17,11 @@ class MainViewModel : ViewModel() {
 
     val shopList = getShopListUseCase.getShopList()
 
-    fun delItemShopList(shopItem: ShopItem){
+    fun delItemShopList(shopItem: ShopItem) {
         delItemShopListUseCase.delItemShopList(shopItem)
     }
 
-    fun changeEnableState(shopItem: ShopItem){
+    fun changeEnableState(shopItem: ShopItem) {
         val newItem = shopItem.copy(enabled = !shopItem.enabled)
         editShopListUseCase.editItemShopList(newItem)
     }

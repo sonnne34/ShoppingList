@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.sonne.shoppinglist.domian.ShopItem
 import com.sonne.shoppinglist.domian.ShopListRepository
+import kotlin.random.Random
 
 object ShopListRepositoryImpl : ShopListRepository {
 
@@ -13,8 +14,8 @@ object ShopListRepositoryImpl : ShopListRepository {
     private var autoIncrementId = 0
 
     init {
-        for (i in 0..10) {
-            val item = ShopItem("Name $i", i, true)
+        for (i in 0 until 1000) {
+            val item = ShopItem("Name $i", i, Random.nextBoolean())
             addItemShopList(item)
         }
     }
@@ -42,7 +43,7 @@ object ShopListRepositoryImpl : ShopListRepository {
     //  в случае, если объект не найден, приложение упадёт с соответсвующим собщением.
     //  если ситуация, когда объект не найден станет для меня нормальной, можно будет убрать
     //  ?: throw RuntimeException("Element with id $shopItemId not found")
-    //  и просто обозначить значение nonull
+    //  и просто обозначить значение nonnull
     override fun getItemShopList(shopItemId: Int): ShopItem {
         return shopList.find {
             it.id == shopItemId
@@ -54,7 +55,7 @@ object ShopListRepositoryImpl : ShopListRepository {
         return shopListLD
     }
 
-    private fun updateList(){
+    private fun updateList() {
         shopListLD.value = shopList.toList()
     }
 }
