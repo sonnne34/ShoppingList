@@ -5,6 +5,5 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="com.sonne.shoppinglist.presentation.ShopItemFragment"
     tools:context=".presentation.ShopItemActivity"
     tools:layout="@layout/fragment_shop_item"/>
