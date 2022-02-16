@@ -1,8 +1,10 @@
 package com.sonne.shoppinglist.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +19,9 @@ import com.sonne.shoppinglist.domian.ShopItem
 class ShopItemFragment : Fragment() {
 
     private lateinit var viewModel: ShopItemViewModel
+
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
+
     private lateinit var tilName: TextInputLayout
     private lateinit var tilCount: TextInputLayout
     private lateinit var etName: EditText
@@ -25,6 +30,15 @@ class ShopItemFragment : Fragment() {
 
     private var screenMode: String = MODE_UNKNOWN
     private var shopItemId: Int = ShopItem.UNDEFINED_ID
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is OnEditingFinishedListener) {
+            onEditingFinishedListener = context
+        } else {
+            throw  java.lang.RuntimeException("Activity must implement OnEditingFinishedListener")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +81,7 @@ class ShopItemFragment : Fragment() {
             tilName.error = message
         }
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onEditingFinishedListener.onEditingFinished()
         }
     }
 
@@ -126,11 +140,12 @@ class ShopItemFragment : Fragment() {
     private fun parseParams() {
         val args = requireArguments()
         //если args(Bundle) не содержит EXTRA_SCREEN_MODE то бросаем исключение
-        if (args.containsKey(EXTRA_SCREEN_MODE)) {
+        Log.d("parseParams", "args =$args")
+        if (!args.containsKey(SCREEN_MODE)) {
             throw RuntimeException("Param screen mode is absent")
         }
         //если EXTRA_SCREEN_MODE неизвестный то бросаем исключение
-        val mode = args.getString(EXTRA_SCREEN_MODE)
+        val mode = args.getString(SCREEN_MODE)
         if (mode != MODE_EDIT && mode != MODE_ADD) {
             throw RuntimeException("Unknown screen mode $mode")
         }
@@ -152,8 +167,12 @@ class ShopItemFragment : Fragment() {
         btnSave = view.findViewById(R.id.btn_save)
     }
 
+    interface OnEditingFinishedListener {
+        fun onEditingFinished()
+    }
+
     companion object {
-        private const val EXTRA_SCREEN_MODE = "extra_mode"
+        private const val SCREEN_MODE = "extra_mode"
         private const val EXTRA_SHOP_ITEM_ID = "extra_shop_item_id"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
@@ -162,7 +181,7 @@ class ShopItemFragment : Fragment() {
         fun newInstanceAddItem(): ShopItemFragment {
             return ShopItemFragment().apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_SCREEN_MODE, MODE_ADD)
+                    putString(SCREEN_MODE, MODE_ADD)
                 }
             }
         }
@@ -170,7 +189,7 @@ class ShopItemFragment : Fragment() {
         fun newInstanceEditItem(shopItemId: Int): ShopItemFragment {
             return ShopItemFragment().apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_SCREEN_MODE, MODE_EDIT)
+                    putString(SCREEN_MODE, MODE_EDIT)
                     putInt(EXTRA_SHOP_ITEM_ID, shopItemId)
                 }
             }
