@@ -1,61 +1,49 @@
 package com.sonne.shoppinglist.data
 
+import android.app.Application
+import android.app.MediaRouteActionProvider
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Transformations
 import com.sonne.shoppinglist.domian.ShopItem
 import com.sonne.shoppinglist.domian.ShopListRepository
-import kotlin.random.Random
 
-object ShopListRepositoryImpl : ShopListRepository {
+class ShopListRepositoryImpl(
+    application: Application
+) : ShopListRepository {
 
-    private val shopListLD = MutableLiveData<List<ShopItem>>()
-    private val shopList = sortedSetOf<ShopItem>({ p0, p1 -> p0.id.compareTo(p1.id) })
-
-    private var autoIncrementId = 0
-
-    init {
-        for (i in 0 until 10) {
-            val item = ShopItem("Name $i", i, Random.nextBoolean())
-            addItemShopList(item)
-        }
-    }
+    private val shopListDAO = AppDB.getInstance(application).shopListDao()
+    private val mapper = ShopListMapper()
 
     override fun addItemShopList(shopItem: ShopItem) {
-        if (shopItem.id == ShopItem.UNDEFINED_ID) {
-            shopItem.id = autoIncrementId++
-        }
-        shopList.add(shopItem)
-        updateList()
+        shopListDAO.addShopItem(mapper.mapEntityToDBModel(shopItem))
     }
 
     override fun delItemShopList(shopItem: ShopItem) {
-        shopList.remove(shopItem)
-        updateList()
+        shopListDAO.deleteShopItem(shopItem.id)
     }
 
     override fun editItemShopList(shopItem: ShopItem) {
-        val oldElement = getItemShopList(shopItem.id)
-        shopList.remove(oldElement)
-        addItemShopList(shopItem)
+        shopListDAO.addShopItem(mapper.mapEntityToDBModel(shopItem))
     }
 
-    //  чтобы не забыть, мне напоминание:
-    //  в случае, если объект не найден, приложение упадёт с соответсвующим собщением.
-    //  если ситуация, когда объект не найден станет для меня нормальной, можно будет убрать
-    //  ?: throw RuntimeException("Element with id $shopItemId not found")
-    //  и просто обозначить значение nonnull
     override fun getItemShopList(shopItemId: Int): ShopItem {
-        return shopList.find {
-            it.id == shopItemId
-        } ?: throw RuntimeException("Element with id $shopItemId not found")
+        val dbModel = shopListDAO.getShopItem(shopItemId)
+        return mapper.mapDBModelToEntity(dbModel)
     }
 
-
-    override fun getShopList(): LiveData<List<ShopItem>> {
-        return shopListLD
+//    override fun getShopList(): LiveData<List<ShopItem>> = MediatorLiveData<List<ShopItem>>().apply {
+//         addSource(shopListDAO.getShopList()) {
+//             value = mapper.mapListDBModelToListEntity(it)
+//         }
+//    }
+//    MediatorLiveData нужен для перехвата LiveData и работы с ним.
+//    Так как мы лишь преобразовывваем объект из исходной LiveData в какой то другой тип,
+//    то можем просто использовать Transformations (import androidx.lifecycle.Transformations)
+    override fun getShopList(): LiveData<List<ShopItem>> = Transformations.map(
+    shopListDAO.getShopList()
+) {
+        mapper.mapListDBModelToListEntity(it)
     }
 
-    private fun updateList() {
-        shopListLD.value = shopList.toList()
-    }
 }
