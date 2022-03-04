@@ -1,21 +1,30 @@
 package com.sonne.shoppinglist.presentation
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.sonne.shoppinglist.data.ShopListRepositoryImpl
 import com.sonne.shoppinglist.domian.AddItemShopListUseCase
 import com.sonne.shoppinglist.domian.EditItemShopListUseCase
 import com.sonne.shoppinglist.domian.GetItemShopListUseCase
 import com.sonne.shoppinglist.domian.ShopItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
-class ShopItemViewModel : ViewModel() {
+class ShopItemViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ShopListRepositoryImpl
+    private val repository = ShopListRepositoryImpl(application)
 
     private val getItemShopListUseCase = GetItemShopListUseCase(repository)
     private val addItemShopListUseCase = AddItemShopListUseCase(repository)
     private val editItemShopListUseCase = EditItemShopListUseCase(repository)
+
+//    больше не нужен, т.к. мы используем viewModelScope а не CoroutineScope
+//    private val scope = CoroutineScope(Dispatchers.Main)
 
     private var _errorInputName = MutableLiveData<Boolean>()
     val errorInputName: LiveData<Boolean>
@@ -30,8 +39,10 @@ class ShopItemViewModel : ViewModel() {
         get() = _shopItem
 
     fun getItem(shopItemId: Int) {
-        val item = getItemShopListUseCase.getItemShopList(shopItemId)
-        _shopItem.value = item
+        viewModelScope.launch {
+            val item = getItemShopListUseCase.getItemShopList(shopItemId)
+            _shopItem.value = item
+        }
     }
 
     private var _shouldCloseScreen = MutableLiveData<Unit>()
@@ -43,9 +54,11 @@ class ShopItemViewModel : ViewModel() {
         val count = parseCount(inputCount)
         val fieldValid = validateInput(name, count)
         if (fieldValid) {
-            val shopItem = ShopItem(name, count, true)
-            addItemShopListUseCase.addItemShopList(shopItem)
-            finishWork()
+            viewModelScope.launch {
+                val shopItem = ShopItem(name, count, true)
+                addItemShopListUseCase.addItemShopList(shopItem)
+                finishWork()
+            }
         }
     }
 
@@ -54,11 +67,13 @@ class ShopItemViewModel : ViewModel() {
         val count = parseCount(inputCount)
         val fieldValid = validateInput(name, count)
         if (fieldValid) {
-           _shopItem.value?.let {
-               val item = it.copy(name = name, count = count)
-               editItemShopListUseCase.editItemShopList(item)
-               finishWork()
-           }
+            _shopItem.value?.let {
+                viewModelScope.launch {
+                    val item = it.copy(name = name, count = count)
+                    editItemShopListUseCase.editItemShopList(item)
+                    finishWork()
+                }
+            }
         }
     }
 
@@ -95,7 +110,13 @@ class ShopItemViewModel : ViewModel() {
         _errorInputCount.value = false
     }
 
-    private fun finishWork(){
+    private fun finishWork() {
         _shouldCloseScreen.value = Unit
     }
+
+//    больше не нужен, т.к. мы используем viewModelScope а не CoroutineScope:
+//    override fun onCleared() {
+//        super.onCleared()
+//        scope.cancel()
+//    }
 }

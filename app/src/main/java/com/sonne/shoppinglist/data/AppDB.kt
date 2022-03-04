@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [ShopItemDBModel::class], version = 1, exportSchema = false)
-abstract class AppDB: RoomDatabase() {
+abstract class AppDB : RoomDatabase() {
 
     abstract fun shopListDao(): ShopListDAO
 
@@ -15,11 +15,11 @@ abstract class AppDB: RoomDatabase() {
         private val LOCK = Any()
         private const val DB_NAME = "shop_item.db"
 
-        fun getInstance(application: Application): AppDB{
+        fun getInstance(application: Application): AppDB {
             INSTANCE?.let {
                 return it
             }
-            synchronized(LOCK){
+            synchronized(LOCK) {
                 INSTANCE?.let {
                     return it
                 }
@@ -27,7 +27,11 @@ abstract class AppDB: RoomDatabase() {
                     application,
                     AppDB::class.java,
                     DB_NAME
-                ).build()
+                )
+//                  сообщаем, что можно запускать в главном потоке, пока нет корутин
+//                  (только для теста):
+//                  .allowMainThreadQueries()
+                    .build()
                 INSTANCE = db
                 return db
             }
