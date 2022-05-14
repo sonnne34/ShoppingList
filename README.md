@@ -1,5 +1,5 @@
 # ShoppingList
-Shopping list App.  Clean Architecture, ViewModel, LiveData, RecyclerView. ListAdapter, DataBinding, Room...
+Shopping list App.  Clean Architecture, ViewModel, LiveData, RecyclerView. ListAdapter, DataBinding, Coroutines, Room...
 
 
 ![m_ShoppingList1](https://user-images.githubusercontent.com/60262104/168428874-7b381268-a78f-4765-9574-cb9c33dc9a63.png)
