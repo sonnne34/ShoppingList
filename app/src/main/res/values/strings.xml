@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">ShoppingList</string>
-    <string name="add_new_shop_item">Add new shop item</string>
+    <string name="app_name">ПроПокупки</string>
+    <string name="add_new_shop_item">Добавить покупку</string>
     <string name="name_shop">Салфетки</string>
     <string name="count_shop">1</string>
-    <string name="name">Name</string>
-    <string name="count">Count</string>
-    <string name="save">Save</string>
-    <string name="error">Error</string>
+    <string name="name">Покупка</string>
+    <string name="count">Количество</string>
+    <string name="save">Сохранить</string>
+    <string name="error">Ошибка</string>
 </resources>
