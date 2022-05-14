@@ -11,10 +11,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="8dp"
+
         app:cardCornerRadius="4dp"
         app:cardElevation="1dp"
         app:cardUseCompatPadding="true">
@@ -22,9 +19,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/grey"
+            android:background="@color/white"
             android:orientation="horizontal"
-            android:padding="@dimen/dp16">
+            android:padding="8dp">
 
             <TextView
                 android:id="@+id/tv_name"
@@ -32,18 +29,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@{shopItem.name}"
-                android:textColor="@color/white"
+                android:textColor="@color/primary_light"
                 android:textSize="@dimen/sp16"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{String.valueOf(shopItem.count)}"
-                android:textColor="@color/white"
+                android:textColor="@color/primary_light"
                 android:textSize="@dimen/sp16"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
         </LinearLayout>
 
